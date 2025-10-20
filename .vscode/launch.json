@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug executable 'sanpin_rs'",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/target/debug/sanpin_rs.exe",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            // "cargo": {
+                "args": [
+                    "run",
+                    "--bin=src/sanpin_rs",
+                    "--package=sanpin_rs"
+                ],
+                // "filter": {
+                    // "name": "sanpin_rs",
+                    // "kind": "bin"
+                // },
+            // },
+            "preLaunchTask": "cargo build",
+        },
+        // {
+        //     "name": "Debug unit tests in executable 'sanpin_rs'",
+        //     "type": "lldb",
+        //     "request": "launch",
+        //     "cargo": {
+        //         "args": [
+        //             "test",
+        //             "--bin=sanpin_rs"
+        //         ]
+        //     }
+        // }
+    ]
+}
