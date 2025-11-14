@@ -1,0 +1,90 @@
+use std::process::{Command, Stdio};
+use std::io::{BufReader, BufRead};
+use crate::cli::Args;
+use encoding_rs::SHIFT_JIS;
+
+
+pub fn run_ping(args: &Args) -> Result<String, String> {
+    let output = Command::new("ping")
+        .arg(&args.target)
+        .arg("-n")
+        .arg(args.count.to_string())
+        .arg("-w")
+        .arg(args.timeout.to_string())
+        .output(); //←これで終わるとping終了まで待つ
+
+    match output {
+        Ok(output) => {
+            if output.status.success() {
+                let (decoded_output, _encoding, _malformed) = SHIFT_JIS.decode(&output.stdout);
+                Ok(decoded_output.into_owned())
+            } else {
+                let (decoded_stderr, _encoding, _malformed) = SHIFT_JIS.decode(&output.stderr);
+                Err(format!("Pingコマンドがエラーで終了しました:\n{}", decoded_stderr.into_owned()))
+            }
+        }
+        Err(e) => {
+            Err(format!("Pingコマンドの実行に失敗しました: {}", e))
+        }
+    }
+}
+
+
+pub fn run_ping_realtime(args: &Args) -> Result<String, String> {
+    let mut command = Command::new("ping");
+    command
+        .arg(&args.target)
+        .arg("-n")
+        .arg(args.count.to_string())
+        .arg("-w")
+        .arg(args.timeout.to_string())
+        //↓realtime
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped());
+
+    let mut child = match command.spawn() {
+        Ok(c) => c,
+        Err(e) => return Err(format!("Pingコマンドの実行に失敗しました： {}", e)),
+    };
+
+    // stdout パイプからリアルタイムに読み取る
+    let stdout = child.stdout.take().expect("stdoutパイプにアクセスできませんでした");
+    let reader = BufReader::new(stdout);
+
+    let mut full_output = String::new();
+
+    // 出力を1行ずつ読み取り、Shift-JISとしてデコードして画面に表示
+    for line in reader.lines() {
+        match line {
+            Ok(bytes) => {
+                // Shift-JISとしてデコード
+                let (decoded_line, _encoding, _malformed) = SHIFT_JIS.decode(bytes.as_bytes());
+                let output_line = decoded_line.into_owned();
+                
+                // リアルタイム表示: 画面に出力する
+                println!("{}", output_line); 
+                
+                // 次のステップのパースのために、フル出力を保持する
+                full_output.push_str(&output_line);
+                full_output.push('\n');
+            }
+            Err(e) => {
+                eprintln!("出力を読み取る際にエラーが発生しました: {}", e);
+            }
+        }
+    }
+
+    // プロセスが終了するのを待つ
+    let status = child.wait().expect("子プロセスが待機中に失敗しました");
+
+    if status.success() {
+        Ok(full_output)
+    } else {
+        // 標準エラー出力の処理 (今回は標準出力のみでping結果が完結することが多いが、念のため)
+        let stderr = child.stderr.take().expect("標準エラー出力パイプにアクセスできませんでした");
+        let error_bytes = std::io::read_to_string(stderr).expect("標準エラーの読み取りに失敗");
+        let (decoded_stderr, _encoding, _malformed) = SHIFT_JIS.decode(error_bytes.as_bytes());
+
+        Err(format!("Pingコマンドがエラーで終了しました。:\n{}", decoded_stderr))
+    }
+}

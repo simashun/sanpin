@@ -1,8 +1,11 @@
 [package]
 name = "sanpin_rs"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 
 [dependencies]
+clap = { version = "4.5.50", features = ["derive"] }
+encoding_rs = "0.8.35"
 # ICMP機能と基本的なAPI型に必要
-windows-sys = { version = "0.52", features = ["Win32_NetworkManagement_IpHelper", "Win32_Foundation"] }
+windows-sys = { version = "0.52", features = ["Win32_NetworkManagement_IpHelper", "Win32_Foundation", "Win32_System_Console"] }
+ctrlc = "3.2"
