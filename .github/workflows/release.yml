@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          Copy-Item target/release/sanpin.exe dist/sanpin.exe
+          Compress-Archive -Path dist/sanpin.exe -DestinationPath dist/sanpin-${{ github.ref_name }}-windows-x86_64.zip
+          Get-FileHash dist/sanpin-${{ github.ref_name }}-windows-x86_64.zip -Algorithm SHA256 | Select-Object -ExpandProperty Hash | Out-File dist/sanpin-${{ github.ref_name }}-windows-x86_64.zip.sha256 -Encoding ascii
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/sanpin-${{ github.ref_name }}-windows-x86_64.zip
+            dist/sanpin-${{ github.ref_name }}-windows-x86_64.zip.sha256
