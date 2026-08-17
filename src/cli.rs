@@ -13,12 +13,12 @@ pub struct Args {
     pub count: u32,
 
     // パケットのタイムアウト値(msec)
-    #[arg(short = 'W', long, default_value_t = 4000)]
+    #[arg(short = 'w', long, default_value_t = 4000)]
     pub timeout: u32,
 
-    /// 有効にすると ping ごとに成功/失敗でビープ音を鳴らします
-    #[arg(long, default_value_t = false)]
-    pub beep: bool,
+    /// 指定するとビープを無効にします（デフォルト：ビープ有効）
+    #[arg(short = 'n', long = "nonbeep", default_value_t = false)]
+    pub nonbeep: bool,
 
     /// 継続的に ping を送信する (-t の動作)
     #[arg(short = 't', long = "continuous", default_value_t = false)]

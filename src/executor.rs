@@ -93,14 +93,12 @@ pub fn run_ping_realtime(args: &Args) -> Result<String, String> {
                 let output_line: &str = decoded_line.as_ref();
                 print!("{}", output_line); // 既に末尾に改行が含まれるため println! ではなく print! を使う
 
-                // ビープ機能: args.beep が有効な場合に到達/未達に応じて音を鳴らす
-                if args.beep {
+                // ビープ機能: デフォルトでビープを行う。ビープを無効にするには `--nonbeep` を指定します
+                if !args.nonbeep {
                     // 成功/失敗の判定パターン（英語・日本語両対応）
                     let success_patterns = [
                         "Reply from",
                         "TTL=",
-                        "からの応答",
-                        "応答:",
                         "バイト数 =",
                         "時間 =",
                     ];

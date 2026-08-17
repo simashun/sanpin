@@ -227,8 +227,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "sanpin_rs"
-version = "0.1.1"
+name = "sanpin"
+version = "0.2.1"
 dependencies = [
  "clap",
  "ctrlc",

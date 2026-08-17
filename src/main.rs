@@ -1,5 +1,5 @@
 mod cli;
-use clap::Parser;
+use clap::{error::ErrorKind, CommandFactory,Parser};
 use cli::Args;
 mod executor;
 mod sound;
@@ -7,7 +7,9 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 
 fn main() {
-    let args = Args::parse();
+
+    let args = parse_args();
+    // let args = Args::try_parse();
 
     println!("- Ping start -");
     println!("target: {}", args.target);
@@ -49,4 +51,26 @@ fn main() {
             }
         }
     }
+}
+
+fn parse_args() -> Args {
+    match Args::try_parse() {
+        Ok(args) => {
+            if args.target.starts_with('-') {
+                eprintln!("targetにはホスト名またはIPアドレスを指定してください。");
+                std::process::exit(2);
+            }
+            args
+        }
+        Err(err) if err.kind() == ErrorKind::UnknownArgument => {
+                let mut cmd = Args::command();
+                eprintln!("不正なオプションです");
+                eprintln!("{}",cmd.render_usage());
+                std::process::exit(2);
+            }
+        Err(err) => {
+            err.exit();
+        }
+    }
+
 }
