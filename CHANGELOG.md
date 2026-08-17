@@ -1,5 +1,12 @@
 # CHANGELOG
 
+Rust版sanpinのChangeLog
+
+## v1.11.0 (2026-08-17)
+
+- 作り直したものをpython版(1.10)からバージョン引き継いで1.11.0とした
+- 今後はRust版のみ更新
+
 ## v0.1.1 (2025-11-14)
 
 - Fix: Ping 出力の UTF-8 デコードエラーを解消（バイト読み取り + Shift-JIS デコードに変更）
@@ -12,8 +19,3 @@
 - Build: release ビルドと Windows 用パッケージを作成
 
 ----
-
-今後の予定:
-
-- Git タグ作成とコミット、GitHub リリース作成
-- CHANGELOG の詳細追記（必要に応じて）

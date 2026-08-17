@@ -4,14 +4,6 @@ Windows 向け beep 音つき ping ラッパー
 - Windows 向けOS標準 `ping` のラッパーです。
 - デフォルトで ping 成功/失敗で異なるビープ音が鳴ります（`--nonbeep` で無効化可能）。
 
-## ダウンロード
-- GitHub Releases: https://github.com/simashun/sanpin/releases/tag/v0.1.1
-- Windows ZIP (SHA256): `8E7DA1FF79B0C3E6E797AF8499AAE24EABF269EA5D0C1A390EEBC82529E01C75`
-
-検証方法の例:
-```powershell
-Get-FileHash -Path release\sanpin-v0.1.1-windows-x86_64.zip -Algorithm SHA256
-```
 
 ## 要件
 - Windows (Beep を利用するため)
