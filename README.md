@@ -1,13 +1,14 @@
-Windows 向け beep 音つき ping ラッパー
+sound付きping(ping wraper)
 
 ## 概要
-- Windows 向けOS標準 `ping` のラッパーです。
+- OS標準 `ping` のラッパーです。
 - デフォルトで ping 成功/失敗で異なるビープ音が鳴ります（`--nonbeep` で無効化可能）。
 
 
 ## 要件
 - Windows (Beep を利用するため)
 - Rust toolchain（ソースからビルドする場合）
+- Linux版は作成中
 
 ## ビルド（ソースから）
 ```powershell
