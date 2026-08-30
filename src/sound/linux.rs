@@ -4,7 +4,7 @@ use cpal::{
 };
 use std::{error::Error, f32::consts::TAU, time::Duration};
 
-fn play_notification() -> Result<(), Box<dyn Error>> {
+pub fn play_beep(bool: bool) -> Result<(), Box<dyn Error>> {
     let host = cpal::host_from_id(cpal::HostId::PipeWire)?;
     let device = host.default_output_device().ok_or("PipeWireの出力デバイスがないでーす")?;
 
